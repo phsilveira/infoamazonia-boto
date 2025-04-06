@@ -7,6 +7,8 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv
 from sqlmodel import Field, SQLModel, create_engine
 
+from .redis_utils import get_redis_connection
+
 logger = logging.getLogger("app")
 logger.setLevel(logging.INFO)
 
@@ -39,6 +41,8 @@ else:
 
 engine = create_engine(sql_url)
 
+# Initialize Redis connection
+redis_client = get_redis_connection()
 
 def create_db_and_tables():
     return SQLModel.metadata.create_all(engine)

@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DBNAME=app
+      - DBHOST=db
+      - DBPORT=5432
+      - DBUSER=app_user
+      - DBPASS=app_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: bash -c "cd /app && python -m pip install -e . && python -m fastapi_app.seed_data && python -m uvicorn fastapi_app:app --host 0.0.0.0 --port 8000 --reload"
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=app_password
+      - POSTGRES_USER=app_user
+      - POSTGRES_DB=app
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres_data:
+  redis_data:

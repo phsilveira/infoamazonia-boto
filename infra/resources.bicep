@@ -363,13 +363,15 @@ resource redisCache 'Microsoft.Cache/redis@2023-04-01' = {
 output WEB_URI string = 'https://${web.properties.defaultHostName}'
 output APPLICATIONINSIGHTS_CONNECTION_STRING string = applicationInsightsResources.outputs.APPLICATIONINSIGHTS_CONNECTION_STRING
 
-resource webAppSettings 'Microsoft.Web/sites/config@2022-03-01' existing = {
-  name: web::appSettings.name
-  parent: web
-}
+// Define a static array of app setting keys instead of trying to reference them dynamically
+var appSettingsKeys = [
+  'SCM_DO_BUILD_DURING_DEPLOYMENT'
+  'AZURE_POSTGRESQL_CONNECTIONSTRING'
+  'SECRET_KEY'
+  'AZURE_REDIS_CONNECTIONSTRING'
+]
 
-var webAppSettingsKeys = map(items(webAppSettings.list().properties), setting => setting.key)
-output WEB_APP_SETTINGS array = webAppSettingsKeys
+output WEB_APP_SETTINGS array = appSettingsKeys
 output WEB_APP_LOG_STREAM string = format('https://portal.azure.com/#@/resource{0}/logStream', web.id)
 output WEB_APP_SSH string = format('https://{0}.scm.azurewebsites.net/webssh/host', web.name)
 output WEB_APP_CONFIG string = format('https://portal.azure.com/#@/resource{0}/configuration', web.id)

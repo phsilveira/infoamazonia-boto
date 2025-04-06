@@ -1,6 +1,10 @@
 from sqlmodel import SQLModel
 
-from fastapi_app.models import Restaurant, Review, create_db_and_tables, engine
+try:
+    from fastapi_app.models import Restaurant, Review, create_db_and_tables, engine
+except ImportError:
+    # For when running directly from this directory
+    from .models import Restaurant, Review, create_db_and_tables, engine
 
 
 def drop_all():
@@ -11,4 +15,6 @@ def drop_all():
 
 
 if __name__ == "__main__":
+    print("Creating database and tables...")
     create_db_and_tables()
+    print("Database and tables created successfully!")

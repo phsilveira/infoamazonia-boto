@@ -9,14 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-    environment:
-      - DBNAME=app
-      - DBHOST=db
-      - DBPORT=5432
-      - DBUSER=app_user
-      - DBPASS=app_password
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy

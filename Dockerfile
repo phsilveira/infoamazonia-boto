@@ -7,9 +7,14 @@ COPY ./src/requirements.txt /app/src/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-RUN pip install --no-cache-dir redis azure-monitor-opentelemetry python-dotenv
+RUN pip install --no-cache-dir redis azure-monitor-opentelemetry python-dotenv uv
 
 COPY . /app/
+
+# Change to src directory and run uv sync
+WORKDIR /app/src
+RUN uv sync --frozen
+WORKDIR /app
 
 # Make entrypoint.sh executable
 RUN chmod +x /app/src/entrypoint.sh

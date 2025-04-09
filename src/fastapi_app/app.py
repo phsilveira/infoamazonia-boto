@@ -4,6 +4,7 @@ import pathlib
 import json
 import time
 from datetime import datetime
+import pkg_resources  # Add this import for getting installed packages
 
 # Conditionally import Azure Monitor
 try:
@@ -61,8 +62,16 @@ async def health():
             "app": {"status": "healthy"},
             "database": {"status": "unknown"},
             "redis": {"status": "unknown"},
-        }
+        },
+        "dependencies": {}  # Add a new field for dependencies
     }
+    
+    # Add installed packages information
+    try:
+        installed_packages = pkg_resources.working_set
+        health_status["dependencies"] = {pkg.key: pkg.version for pkg in installed_packages}
+    except Exception as e:
+        health_status["dependencies"] = {"error": f"Failed to retrieve packages: {str(e)}"}
     
     # Check database connection
     try:

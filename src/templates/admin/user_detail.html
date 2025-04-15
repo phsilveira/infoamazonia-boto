@@ -1,0 +1,290 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-lg font-medium text-gray-900">User Details</h1>
+        <a href="/admin/users" class="text-sm text-gray-600 hover:text-gray-900">← Back</a>
+    </div>
+
+    <!-- User Info -->
+    <dl class="bg-white rounded-lg shadow-sm p-4 grid grid-cols-2 gap-4 mb-6">
+        <div>
+            <dt class="text-xs font-medium text-gray-500">Phone</dt>
+            <dd class="mt-1">{{ user.phone_number }}</dd>
+        </div>
+        <div>
+            <dt class="text-xs font-medium text-gray-500">Status</dt>
+            <dd class="mt-1">
+                <form method="POST" action="/admin/users/{{ user.id }}/status" class="inline">
+                    <select name="status" 
+                            onchange="this.form.submit()" 
+                            class="form-select text-xs px-2 py-1 rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="active" {{ 'selected' if user.is_active else '' }}>Active</option>
+                        <option value="inactive" {{ 'selected' if not user.is_active else '' }}>Inactive</option>
+                    </select>
+                </form>
+            </dd>
+        </div>
+        <div>
+            <dt class="text-xs font-medium text-gray-500">Schedule</dt>
+            <dd class="mt-1">
+                <form method="POST" action="/admin/users/{{ user.id }}/schedule" class="inline">
+                    <select name="schedule" 
+                            onchange="this.form.submit()" 
+                            class="form-select text-xs px-2 py-1 rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="daily" {{ 'selected' if user.schedule == 'daily' else '' }}>Diário</option>
+                        <option value="weekly" {{ 'selected' if user.schedule == 'weekly' else '' }}>Semanal</option>
+                        <option value="monthly" {{ 'selected' if user.schedule == 'monthly' else '' }}>Mensal</option>
+                        <option value="immediately" {{ 'selected' if user.schedule == 'immediately' else '' }}>Imediatamente</option>
+                    </select>
+                </form>
+            </dd>
+        </div>
+        <div>
+            <dt class="text-xs font-medium text-gray-500">Created</dt>
+            <dd class="mt-1">{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+        </div>
+    </dl>
+
+    <!-- Subjects -->
+    <div class="bg-white rounded-lg shadow-sm mb-6">
+        <div class="px-4 py-3 border-b flex justify-between items-center">
+            <h2 class="font-medium">Subjects</h2>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addSubjectModal"
+                    class="btn btn-primary flex-grow-1">
+                Add Subject
+            </button>
+        </div>
+        <div class="p-4">
+            {% if subjects %}
+                <div class="space-y-2">
+                    {% for subject in subjects %}
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
+                            {{ subject.subject_name }}
+                            <button type="button" 
+                                    class="btn btn-primary flex-grow-1"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteSubjectModal"
+                                    data-subject-id="{{ subject.id }}"
+                                    data-subject-name="{{ subject.subject_name }}">
+                                <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor">
+                                    <path d="M1 1l10 10M1 11L11 1" stroke-width="1.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500 text-center py-3">No subjects added</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Locations -->
+    <div class="bg-white rounded-lg shadow-sm">
+        <div class="px-4 py-3 border-b flex justify-between items-center">
+            <h2 class="font-medium">Locations</h2>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addLocationModal"
+                    class="px-2.5 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded">
+                Add Location
+            </button>
+        </div>
+        <div class="p-4">
+            {% if locations %}
+                <div class="space-y-2">
+                    {% for location in locations %}
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
+                            <div>
+                                <div>{{ location.location_name }}</div>
+                                <div class="text-xs text-gray-500">{{ location.latitude }}, {{ location.longitude }}</div>
+                            </div>
+                            <button type="button" 
+                                    class="text-gray-500 hover:text-red-700 transition-colors duration-150"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteLocationModal"
+                                    data-location-id="{{ location.id }}"
+                                    data-location-name="{{ location.location_name }}">
+                                <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor">
+                                    <path d="M1 1l10 10M1 11L11 1" stroke-width="1.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-gray-500 text-center py-3">No locations added</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubjectModalLabel">Add Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/admin/users/{{ user.id }}/subjects">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="subject_name" class="form-label">Subject Name</label>
+                            <input type="text" class="form-control" id="subject_name" name="subject_name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Subject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Location Modal -->
+    <div class="modal fade {% if show_location_modal %}show{% endif %}" 
+         id="addLocationModal" 
+         tabindex="-1" 
+         aria-labelledby="addLocationModalLabel" 
+         aria-hidden="true"
+         {% if show_location_modal %}style="display: block;"{% endif %}>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLocationModalLabel">Add Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/admin/users/{{ user.id }}/location">
+                    <div class="modal-body">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="location_name" class="form-label">Location Name</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="location_name" 
+                                   name="location_name" 
+                                   required
+                                   placeholder="Enter location name(s)">
+                            <small class="form-text text-muted">
+                                Enter location name(s) separated by commas, or type "todas" for all locations.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Location</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if show_location_modal %}
+    <div class="modal-backdrop fade show"></div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('addLocationModal');
+        if (modal) {
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
+        }
+    });
+    </script>
+    {% endif %}
+
+    <!-- Delete Subject Confirmation Modal -->
+    <div class="modal fade" id="deleteSubjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the subject "<span id="deleteSubjectName"></span>"?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteSubjectForm" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Location Confirmation Modal -->
+    <div class="modal fade" id="deleteLocationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the location "<span id="deleteLocationName"></span>"?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteLocationForm" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle Subject deletion
+    const deleteSubjectModal = document.getElementById('deleteSubjectModal');
+    if (deleteSubjectModal) {
+        deleteSubjectModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const subjectId = button.getAttribute('data-subject-id');
+            const subjectName = button.getAttribute('data-subject-name');
+
+            deleteSubjectModal.querySelector('#deleteSubjectName').textContent = subjectName;
+            const form = deleteSubjectModal.querySelector('#deleteSubjectForm');
+            form.action = '/admin/users/{{ user.id }}/subjects/' + subjectId + '/delete';
+        });
+    }
+
+    // Handle Location deletion
+    const deleteLocationModal = document.getElementById('deleteLocationModal');
+    if (deleteLocationModal) {
+        deleteLocationModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const locationId = button.getAttribute('data-location-id');
+            const locationName = button.getAttribute('data-location-name');
+
+            deleteLocationModal.querySelector('#deleteLocationName').textContent = locationName;
+            const form = deleteLocationModal.querySelector('#deleteLocationForm');
+            form.action = '/admin/users/{{ user.id }}/locations/' + locationId + '/delete';
+        });
+    }
+
+    // Handle modal backdrop removal
+    const addLocationModal = document.getElementById('addLocationModal');
+    if (addLocationModal) {
+        addLocationModal.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

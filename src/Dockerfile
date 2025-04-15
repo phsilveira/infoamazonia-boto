@@ -20,8 +20,6 @@ RUN pip install --no-cache-dir pip -U && \
     pip install --no-cache-dir build && \
     pip install --no-cache-dir .
 
-RUN pip install -e .
-
 # Copy project files
 COPY . .
 
@@ -29,4 +27,4 @@ COPY . .
 EXPOSE 8000
 
 # Run application
-CMD ["python", "src/main.py"]
+CMD ["python", "main.py"]

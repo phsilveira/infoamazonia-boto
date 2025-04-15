@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Metrics - InfoAmazonia Admin{% endblock %}
+
+{% block content %}
+<h2>Engagement Metrics</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Total Users</th>
+                <th>Active Users</th>
+                <th>Messages Sent</th>
+                <th>Messages Received</th>
+                <th>Click Through Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for metric in metrics %}
+            <tr>
+                <td>{{ metric.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ metric.total_users }}</td>
+                <td>{{ metric.active_users }}</td>
+                <td>{{ metric.messages_sent }}</td>
+                <td>{{ metric.messages_received }}</td>
+                <td>{{ "%.2f"|format(metric.click_through_rate * 100) }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

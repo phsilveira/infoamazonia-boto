@@ -1,95 +1,147 @@
----
-page_type: sample
-languages:
-- azdeveloper
-- python
-- bicep
-- html
-- css
-- scss
-products:
-- azure
-- azure-app-service
-- azure-postgresql
-- azure-virtual-network
-urlFragment: msdocs-fastapi-postgresql-sample-app
-name: Deploy FastAPI application with PostgreSQL on Azure App Service (Python)
-description: This project deploys a restaurant review web application using FastAPI with Python and Azure Database for PostgreSQL - Flexible Server. It's set up for easy deployment with the Azure Developer CLI.
----
-<!-- YAML front-matter schema: https://review.learn.microsoft.com/en-us/help/contribute/samples/process/onboarding?branch=main#supported-metadata-fields-for-readmemd -->
+# Infoamazonia Boto
 
-# Deploy FastAPI application with PostgreSQL via Azure App Service
+## Table of Contents
+- Overview
+- Prerequisites
+- Local Development
+- Docker Development
+- Deployment to Azure
+- Environment Variables
+- License
 
-This project deploys a web application for a restaurnant review site using FastAPI. The application can be deployed to Azure with Azure App Service using the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview).
+## Overview
+This repository contains the Infoamazonia Boto application, a Python-based web application deployable to Azure.
 
+## Prerequisites
+- Python 3.9+
+- Docker and Docker Compose
+- Azure CLI
+- Azure subscription (for deployment)
+- Git
 
-## Run the sample
+## Local Development
 
-This project has a [dev container configuration](.devcontainer/), which makes it easier to develop apps locally, deploy them to Azure, and monitor them. The easiest way to run this sample application is inside a GitHub codespace. Follow these steps:
+### Setup
+1. Clone the repository:
+   ```sh
+   git clone <repository-url>
+   cd infoamazonia-boto
+   ```
 
-1. Fork this repository to your account. For instructions, see [Fork a repo](https://docs.github.com/get-started/quickstart/fork-a-repo).
+2. Create and activate a virtual environment:
+   ```sh
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-1. From the repository root of your fork, select **Code** > **Codespaces** > **+**.
+3. Install dependencies:
+   ```sh
+   pip install -r requirements.txt
+   # For development dependencies:
+   pip install -r requirements-dev.txt
+   ```
 
-1. In the codespace terminal, run the following commands:
+4. Set up environment variables:
+   ```sh
+   cp .env.sample .env
+   # Edit .env with your configuration
+   ```
 
-    ```shell
-    # Create .env with environment variables
-    cp .env.sample.devcontainer .env
+5. Run the setup script:
+   ```sh
+   ./setup.sh
+   ```
 
-    # Install requirements
-    python3 -m pip install -r src/requirements.txt
+6. Run the application:
+   ```sh
+   python src/main.py
+   ```
 
-    # Install the app as an editable package
-    python3 -m pip install -e src
+## Docker Development
 
-    # Run database migrations
-    python3 src/fastapi_app/seed_data.py
+### Running with Docker Compose
+1. Make sure Docker and Docker Compose are installed on your system.
 
-    # Start the development server
-    python3 -m uvicorn fastapi_app:app --reload --port=8000
-    ```
+2. Create environment variables:
+   ```sh
+   cp .env.sample .env
+   # Edit .env with your configuration
+   ```
 
-1. When you see the message `Your application running on port 8000 is available.`, click **Open in Browser**.
+3. Build and run the containers:
+   ```sh
+   docker-compose up --build
+   ```
 
-## Running locally
+4. Access the application at `http://localhost:8000` (or the port specified in your configuration).
 
-If you're running the app inside VS Code or GitHub Codespaces, you can use the "Run and Debug" button to start the app.
+### GitHub Codespaces / VSCode Dev Containers
+This project supports development in containers via GitHub Codespaces or VSCode Dev Containers:
 
-```sh
-python3 -m uvicorn fastapi_app:app --reload --port=8000
-```
+1. Open the project in VSCode
+2. Click on the green button in the lower left corner and select "Reopen in Container"
+3. Wait for the container to build and initialize
+4. The development environment will be fully set up with all dependencies installed
 
-## Deployment
+## Deployment to Azure
 
-This repo is set up for deployment on Azure via Azure App Service.
+### First-time Setup
+1. Install Azure CLI and log in:
+   ```sh
+   az login
+   ```
 
-Steps for deployment:
+2. Set your subscription:
+   ```sh
+   az account set --subscription <subscription-id>
+   ```
 
-1. Sign up for a [free Azure account](https://azure.microsoft.com/free/) and create an Azure Subscription.
-2. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd). (If you open this repository in Codespaces or with the VS Code Dev Containers extension, that part will be done for you.)
-3. Login to Azure:
+3. Create required Azure resources using the bicep templates:
+   ```sh
+   cd infra
+   az deployment group create --resource-group <resource-group-name> --template-file main.bicep --parameters main.parameters.json
+   ```
 
-    ```shell
-    azd auth login
-    ```
+### Deployment using Azure Developer CLI
+1. Make sure you have Azure Developer CLI installed:
+   ```sh
+   curl -fsSL https://aka.ms/install-azd.sh | bash
+   # Or on Windows: winget install Microsoft.Azd
+   ```
 
-4. Provision and deploy all the resources:
+2. Deploy the application:
+   ```sh
+   azd deploy
+   ```
 
-    ```shell
-    azd up
-    ```
+### Manual Deployment
+1. Build the Docker image:
+   ```sh
+   docker build -t infoamazonia-boto .
+   ```
 
-    It will prompt you to provide an `azd` environment name (like "myapp"), select a subscription from your Azure account, and select a location (like "eastus"). Then it will provision the resources in your account and deploy the latest code. If you get an error with deployment, changing the location can help, as there may be availability constraints for some of the resources.
+2. Tag and push to Azure Container Registry:
+   ```sh
+   az acr login --name <your-acr-name>
+   docker tag infoamazonia-boto <your-acr-name>.azurecr.io/infoamazonia-boto:latest
+   docker push <your-acr-name>.azurecr.io/infoamazonia-boto:latest
+   ```
 
-5. When `azd` has finished deploying, you'll see an endpoint URI in the command output. Visit that URI, and you should see the front page of the app! 🎉
+3. Deploy to Azure App Service:
+   ```sh
+   az webapp config container set --name <app-name> --resource-group <resource-group> --docker-custom-image-name <your-acr-name>.azurecr.io/infoamazonia-boto:latest
+   ```
 
-6. When you've made any changes to the app code, you can just run:
+## Environment Variables
+The application uses the following environment variables (see .env.sample for reference):
 
-    ```shell
-    azd deploy
-    ```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/boto` |
+| `SECRET_KEY` | Secret key for security | `your-secret-key` |
+| `DEBUG` | Enable debug mode | `True` |
+| `ALLOWED_HOSTS` | Comma-separated list of allowed hosts | `localhost,127.0.0.1` |
+| ... | ... | ... |
 
-## Getting help
-
-If you're working with this project and running into issues, please post in [Issues](/issues).
+## License
+See LICENSE file for details.

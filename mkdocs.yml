@@ -1,0 +1,33 @@
+site_name: Infoamazonia Boto Documentation
+site_description: Documentation for the Infoamazonia Boto environmental data monitoring application
+site_author: Infoamazonia Team
+site_url: https://infoamazonia.github.io/boto/
+
+theme:
+  name: readthedocs
+  
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Development: development.md
+  - Deployment: deployment.md
+  - API Documentation: api.md
+  - Services Documentation: services.md
+
+markdown_extensions:
+  - tables
+  - footnotes
+  - attr_list
+  - def_list
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/infoamazonia/boto
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/infoamazonia
+
+copyright: Copyright &copy; 2023 Infoamazonia

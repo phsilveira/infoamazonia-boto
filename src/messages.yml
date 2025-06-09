@@ -1,0 +1,153 @@
+# Welcome messages
+welcome:
+
+# Menu messages
+menu:
+  main: |
+    🌱🐬 Olá! Eu sou o *BOTO*, o robô da InfoAmazonia que te fornece notícias personalizadas sobre a Amazônia brasileira, gratuitamente.  
+
+    Aqui você pode:
+
+    1️⃣ Inscreva-se ou altere seu cadastro para receber notícias do *BOTO* 🔧 
+    2️⃣ Tirar dúvidas sobre um termo 🔍
+    3️⃣ Pedir um resumo de artigo 📄
+    4️⃣ Enviar sugestão de pauta 📨
+    5️⃣ Descadastre-se 📤
+    6️⃣ Saber mais sobre o *BOTO* ℹ️
+
+    ⚙️ Digite o número da opção que deseja acessar.  
+
+  invalid_option: "Opção inválida. Por favor, selecione uma opção válida do menu."
+  term_info: |
+    📚 Você escolheu: Tirar dúvidas sobre um termo.
+
+    👉 Digite um termo ou questão que você deseja entender melhor. Exemplos:
+    _Queimadas na Amazônia_
+    _O que é desmatamento ilegal?_
+    _Qual o impacto do aquecimento global na Amazônia?_
+
+  article_summary: "🔗 Cole abaixo o link ou digite o título do conteúdo que você deseja resumir:"
+  news_suggestion: |
+    📨 Estamos animados para ouvir sua ideia! Por favor, descreva a pauta que você gostaria de sugerir.
+
+    📌 Dica: Inclua informações como o tema, região e por que acha importante abordar esse assunto.
+
+  news_suggestion_reply: |
+    🙏 Obrigado! Estamos encaminhando sua ideia para nossa equipe de redação :)
+
+    🔔 Acompanhe nossas reportagens na InfoAmazonia e fique por dentro das novidades!
+
+
+# Location messages
+location:
+  request: |
+    📍 Primeiro, digite *uma localização de interesse*. Pode ser uma cidade, uma região ou área temática específica.
+    _Exemplos: Belém, Baixo Solimões, Bacia do Xingu e Altamira, Amazonas._
+    _Digite "todas" para receber informações de toda a região_
+
+    Você também pode digitar "Voltar" para retornar ao menu principal.
+  
+  saved: "Ok, vamos te enviar conteúdos de '{location}'. Deseja adicionar alguma outra localização? (Sim/Não)"
+  saved_multiple: "Ok, vamos te enviar conteúdos das seguintes localizações: {locations}. Deseja adicionar alguma outra localização? (Sim/Não)"
+  saved_all: "Ok, vamos te enviar conteúdos de todas as regiões da Amazônia Legal, sem filtros."
+  add_more: "Digite uma nova localização ou mais localizações separadas por vírgula."
+  invalid: "As seguintes localizações não são válidas: {message}. Por favor, tente novamente."
+
+# Subject messages
+subject:
+  request: |
+    📰 Sobre quais *temas* você gostaria de receber notícias?  
+
+    Escolha entre as opções abaixo ou digite o tema que te interessa:  
+    1️⃣ Todos os temas 
+    2️⃣ Biodiversidade e saúde ambiental
+    3️⃣ Conservação e clima
+    4️⃣ Política e economia amazônica
+    5️⃣ Povos originários e territórios
+    6️⃣ Saúde e educação na Amazônia
+    Ou digite outro tema específico. Exemplo: _Mineração em terras indígenas_
+
+  saved: "Ok, vamos te enviar conteúdos de '{subject}'. Deseja adicionar algum outro tema? (Sim/Não)"
+  saved_all: "Ok, vamos te enviar conteúdos de todos os temas, sem filtros."
+  add_more: "Digite um novo tema de interesse:"
+  invalid: "{message} parece não ser um tema válido. Por favor, tente novamente."
+
+# Schedule messages
+schedule:
+  request: |
+    📆 Com que *frequência* você prefere receber notícias?  
+
+    Escolha uma opção:  
+    1️⃣ Diariamente
+    2️⃣ Semanalmente
+    3️⃣ Mensalmente 
+    4️⃣ Assim que for publicada
+
+    📌 Digite o número da sua escolha para continuar ou digite a frequência desejada.
+
+  invalid_option: "Opção inválida. Por favor selecione:\n1. Diariamente\n2. Semanalmente\n3. Mensalmente\n4. Assim que a notícia for publicada"
+  confirmation: |
+    Sua preferência foi configurada! 
+    
+    📍 Região: {location} 
+    📰 Tema: {subject}
+    📆 Frequência: {schedule}.
+    
+    Em breve você começará a receber nossos conteúdos. 🎉
+
+# About message
+about:
+  info: |
+    🐬 *BOTO* é um projeto da *InfoAmazonia* que conecta você à Amazônia diretamente pelo WhatsApp!
+    
+    De forma prática e personalizada, usamos *inteligência artificial generativa* para entregar notícias, dados e insights de diferentes organizações sobre a maior floresta tropical do planeta.
+    
+    🎯 Nosso objetivo é ampliar o acesso à informação e fortalecer a compreensão, o debate e a ação em torno dos desafios e da *importância global da Amazônia*.
+    
+    👉 Compartilhe essa iniciativa com sua rede: https://infoamazonia.org/whatsapp
+    
+    Esse projeto foi financiado pelo ICFJ. 
+
+# Unsubscribe messages
+unsubscribe:
+  confirm: |
+    ⚠️ Você deseja se descadastrar e parar de receber atualizações do BOTO. Confirma o interesse em parar de receber nosso conteúdo?
+  
+    1️⃣ Sim, quero me descadastrar
+    2️⃣ Ops, cliquei errado. Quero continuar recebendo notícias do BOTO.
+  success: |
+    ✅ Você foi descadastrado com sucesso. Em conformidade com a Lei Geral de Proteção de Dados (LGPD), você foi removido da nossa lista de envios e não receberá mais conteúdos.
+  
+    📌 Se quiser voltar a receber nossos conteúdos no futuro, envie MENU e repita o processo de cadastro.
+  cancelled: |
+    🎉 Ótimo! Seu cadastro segue ativo e você continuará recebendo conteúdos personalizados da Amazônia.
+  
+    Digite MENU para voltar ao menu principal.
+  
+  invalid_option: "Por favor, responda 'sim' para confirmar o cancelamento ou 'não' para manter sua inscrição."
+
+# return
+return: "Obrigado! Caso tenha outras dúvidas, digite outro termo relacionado ou escolha uma nova opção no menu principal."
+
+return_to_menu_from_subscription: "Digite *menu* para voltar a menu principal."
+
+return_success: "Obrigado! Caso tenha outras dúvidas, digite outro termo relacionado ou escolha uma nova opção no menu principal."
+
+# Error messages
+error:
+  user_not_found: "Usuário não encontrado"
+  registration_failed: "Falha de cadastro: {error}"
+  save_location: "Falha ao salvar localização: {error}"
+  save_subject: "Falha ao salvar tema: {error}"
+  save_schedule: "Falha ao salvar frequência: {error}"
+  process_message: "Erro ao processar mensagem: {error}"
+  invalid_state: "Estado inválido do chatbot"
+  term_not_found: "Desculpe, não consegui encontrar informações sobre esse termo."
+  article_not_found: "Infelizmente não encontramos a matéria desejada."
+  general_error: "Desculpe, ocorreu um erro ao processar sua solicitação."
+  news_message_not_found: "Desculpe, não encontrei a mensagem original com as notícias."
+  select_article: "Por favor, escolha uma das notícia que você quer ler."
+
+# Feedback messages
+feedback:
+  request: "👍 Essa explicação ajudou?"

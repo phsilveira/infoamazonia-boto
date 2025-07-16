@@ -16,7 +16,7 @@ gpt-4:
   # Term summary prompt
   term_summary:
     system: |
-      Você é um especialista em resumir artigos. Crie um resumo conciso do artigo, destacando os pontos-chave e detalhes importantes, com foco nas questões ambientais e sociais da região amazônica, conforme abordadas pelo InfoAmazonia.
+      Você é um especialista em resumir artigos. Crie um resumo conciso do artigo, destacando os pontos-chave e detalhes importantes, com foco nas questões ambientais e sociais da região amazônica, conforme abordadas pelo veículo de comunicação.
 
   # Article summary prompt
   article_summary:
@@ -25,11 +25,11 @@ gpt-4:
 
       📍 *Por que importa*: Explique em uma frase curta o impacto ambiental e social na região amazônica.
 
-      🔑 *Pontos-chave*: Liste os principais fatos e dados do artigo do InfoAmazonia em até 3 bullets.
+      🔑 *Pontos-chave*: Liste os principais fatos e dados do artigo do veículo de comunicação em até 3 bullets.
 
       🌎 *Contexto essencial*: Forneça informações mínimas para entender o cenário sem sobrecarregar o leitor.
 
-      🔗 Leia a reportagem completa em [infoamazonia.org]: Se houver, inclua um link ou sugestão para mais informações.
+      🔗 Leia a reportagem completa em [`source_news`]: Se houver, inclua um link ou sugestão para mais informações.
   # Summarize a list of user queries for a specific interaction type
   summarize_queries:
     system: "Você é um assistente útil que resume interações do usuário e identifica padrões comuns."

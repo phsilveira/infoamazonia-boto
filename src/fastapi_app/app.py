@@ -63,33 +63,33 @@ async def health():
             "database": {"status": "unknown"},
             "redis": {"status": "unknown"},
         },
-        "dependencies": {},  # Add a new field for dependencies
-        "environment": {}    # Add environment variables information
+        # "dependencies": {},  # Add a new field for dependencies
+        # "environment": {}    # Add environment variables information
     }
     
-    # Add installed packages information
-    try:
-        installed_packages = pkg_resources.working_set
-        health_status["dependencies"] = {pkg.key: pkg.version for pkg in installed_packages}
-    except Exception as e:
-        health_status["dependencies"] = {"error": f"Failed to retrieve packages: {str(e)}"}
+    # # Add installed packages information
+    # try:
+    #     installed_packages = pkg_resources.working_set
+    #     health_status["dependencies"] = {pkg.key: pkg.version for pkg in installed_packages}
+    # except Exception as e:
+    #     health_status["dependencies"] = {"error": f"Failed to retrieve packages: {str(e)}"}
     
-    # Add environment variables (without exposing sensitive values)
-    sensitive_prefixes = ['KEY', 'SECRET', 'TOKEN', 'PASSWORD', 'PASS', 'AUTH', 'CREDENTIAL']
-    for key in os.environ:
-        # Skip internal Python environment variables
-        if key.startswith(('PYTHON', '_')) or 'VSCODE' in key:
-            continue
+    # # Add environment variables (without exposing sensitive values)
+    # sensitive_prefixes = ['KEY', 'SECRET', 'TOKEN', 'PASSWORD', 'PASS', 'AUTH', 'CREDENTIAL']
+    # for key in os.environ:
+    #     # Skip internal Python environment variables
+    #     if key.startswith(('PYTHON', '_')) or 'VSCODE' in key:
+    #         continue
             
-        # Check if this is a sensitive variable
-        is_sensitive = any(sensitive in key.upper() for sensitive in sensitive_prefixes)
+    #     # Check if this is a sensitive variable
+    #     is_sensitive = any(sensitive in key.upper() for sensitive in sensitive_prefixes)
         
-        if is_sensitive:
-            # For sensitive values, just indicate they exist but don't show the value
-            health_status["environment"][key] = "[REDACTED]"
-        else:
-            # For non-sensitive values, show the actual value
-            health_status["environment"][key] = os.environ[key]
+    #     if is_sensitive:
+    #         # For sensitive values, just indicate they exist but don't show the value
+    #         health_status["environment"][key] = "[REDACTED]"
+    #     else:
+    #         # For non-sensitive values, show the actual value
+    #         health_status["environment"][key] = os.environ[key]
     
     # Check database connection
     try:
